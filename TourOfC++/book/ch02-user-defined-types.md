@@ -215,6 +215,47 @@ Maintaining the correspondence between a type field (here, t ) and the type held
 
 Թվարկումներն օգտագործվում են ամբողջ թվերի փոքր խմբեր ներկայացնելու համար։ Դրանք օգտագործվում են կոդն ավելի ընթեռնելի դարձնելու համար և less error-prone than it would have been had the symbolic (and mnemonic) enumerator names not been used.
 
+`class` բառը `enum`֊ից հետո ցույց է տալիս, որ թվարկման տիպը խստորեն որոշված է և որ նրա թվարկված արժեքներն ունեն տեսանելիության տիրույթ։ Լինելով առանձնացված տիպեր `enum class`֊երն օգնում են կանխել հաստատունների պատահական սխալ գործածությունը։ Մասնավորապես մենք չենք կարող շփոթել `Traffic_light`֊ի և `Color`֊ի արժեքները․
+
+````c++
+   Color x= red;                              // սխալ է․ պետք է նշել, թե որ red արժեքն է
+   Color y = Traffic_light::red;         // սխալ է․ սա Color֊ի red արժեքը չէ
+   Color z = Color::red;                   // ճիշտ է
+````
+
+Նմանապես, չենք կարող խառնել `Color` թվարկման արժեքները և ամբողջ թվերը․
+
+````c++
+   int i = Color::red;                         // սխալ է․ Color::red֊ը ամբողջ թիվ չէ
+   Color c = 2;                                 // սխալ է․ 2-ը Color չէ
+````
+
+`Թվարկումը`(`enum class`) լռությամբ ունի սահմանված հավասարության, ինիցիալիզացիայի և համեմատության գործողությունները (օր․`==` և `<`; §1.5)։ Այնուամենայնիվ, թվարկումը օգտագործողի կողմից սահմանված տիպ է, հետևաբար մենք ինքներս կարող ենք նրա համար սահմանել  օպերատորներ․
+
+````c++
+   Traffic_light& operator++(Traffic_light& t)
+           // նախածանցային ինկրեմենտ՝ ++
+   {
+            switch(t){
+            case Traffic_light::green:      return t = Traffic_light::yellow;
+            case Traffic_light::yellow;      return t = Traffic_light::red;
+            case Traffic_light::red;           return t = Traffic_light::green;
+            } 
+   }
+
+   Traffic_light next = ++light;
+````
+
+Եթե չեք ցանկանում խստորեն սահմանափակել թվարկման անունները և ցանկանում եք, որ անուններն ունենան `ամբողջ` արժեքներ (), կարող եք `enum class`֊ից հեռացնել  `class` բառը և կստանաք «սովորական» `թվարկում` (`enum`):
+
+
+
+
+
+
+
+
+
 
 
 
