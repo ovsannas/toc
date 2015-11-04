@@ -18,19 +18,19 @@
 
 ````c++
    struct Vector {
-        int sz;                // տարրերի քանակը
+        int sz;                       // տարրերի քանակը
         double* elem;          // ցուցիչ տարրերի վրա
    }
 ````
 
 `Vector`֊ի առաջին տարբերակը բաղկացած է `int` և `double*` տիպի տարրերից։
 
-   `Vector` տիպի փոփոխականը կարող է սահմանվել հետևյալ կերպ․
+`Vector` տիպի փոփոխականը կարող է սահմանվել հետևյալ կերպ․
 
    ````c++
    Vector v;
    ````
-Այնուամենայնիվ, այն ինքնին շատ գործածելի չէ, քանի որ `v`֊ի `elem` ցուցիչը որևէ տեղ ցույց չի տալիս։ Որպեսզի `v`֊ն կիրառելի լինի, պետք է  `v`ին տանք տարրեր, որոնց վրա ցույց կտա `elem`֊ը։ Օրինակ, `Vector`֊ը կարող ենք կազմել հետևյալ կերպ․
+Այնուամենայնիվ, այն ինքնին շատ գործածելի չէ, քանի որ `v`֊ի `elem` ցուցիչը որևէ տեղ ցույց չի տալիս։ Որպեսզի `v`֊ն կիրառելի լինի, պետք է  `v`-ին տանք տարրեր, որոնց վրա ցույց կտա `elem`֊ը։ Օրինակ, `Vector`֊ը կարող ենք կազմել հետևյալ կերպ․
 
 ````c++
    void vector_init(Vector& v, int s)
@@ -51,13 +51,13 @@
          // կարդում է s ամբողջ թվերը cin֊ից և վերադարձնում նրանց գումարը; ենթադրվում է, որ s-ը պետք է լինի դրական
    {
          Vector v;
-         vector_init(v,s);           // առանձնացնել s հատ տարր v-ի համար
+         vector_init(v,s);               // առանձնացնել s հատ տարր v-ի համար
          for (int i=0; i!=s; ++i)
-               cin >> v.elem[i];     // կարդալ տարրերը
+               cin >> v.elem[i];       // կարդալ տարրերը
 
          double sum = 0;
          for (int i=0; i!=s; ++i)
-               sum+=v.elem[i];      // ստանալ տարրերի գումարը
+               sum+=v.elem[i];       // ստանալ տարրերի գումարը
          return sum;
    }
 ````
@@ -150,6 +150,73 @@ how to use a destructor to elegantly do that.
 
 
 ##2.4 Միավորումներ
+ 
+`Միավորումը` (`union`) այն տվյալների կառուցվածքն է (`a struct`), որի մեջ բոլոր անդամները տեղավորված են հիշողության մեջ միևնույն հասցեում, այնպես որ `միավորումը` զբաղեցնում է իր ամենամեծ անդամի հիշողության տարածքը։ Ինքնին `միավորումը` միաժամանակ կարող է պահել միայն իր մեկ անդամի արժեքը։ Օրինակ, դիտարկենք սիմվոլի մուտքագրման աղյուսակը, որն իր մեջ պահում է անուն և արժեք․
+
+````c++
+   enum Type {str, num};
+
+   struct Entry {
+           char* name;
+           Type t;
+           char* s;       // օգտագործել s-ը, եթե t==str
+           int i;             // օգտագործել i֊ը, եթե t==num
+   };
+
+   void f(Entry* p)
+   {
+           if (p->t == str)
+                   cout << p->s;
+            // ...
+   }
+````
+
+Այստեղ `s` և `i` անդամները երբեք չեն կարող օգտագործվել միևնույն ժամանակ, հետևաբար հիշողության տարածքն զբաղեցրած է անտեղի։ Սա կարող ենք նորից գրել՝ սահմանելով `s` և `i` փոփոխականները որպես `միավորման` անդամներ հետևյալ կերպ․
+
+````c++
+   union Value {
+          char* s;
+          int i;
+   };
+````
+
+The language doesn’t keep track of which kind of value is held by a union , so the programmer must do that:
+
+````c++
+   struct Entry {
+           char* name;
+           Type t;
+           Value v;          // օգտագործել v.s արժեքը, եթե t==str; օգտագործել v.i, եթե t==num
+   };
+
+   void f(Entry* p)
+   {
+           if (p->t == str)
+                    cout << p->v.s
+           // ...
+   }
+````
+
+Maintaining the correspondence between a type field (here, t ) and the type held in a union is errorprone. To avoid errors, one can encapsulate a union so that the correspondence between a type field and access to the union members is guaranteed. At the application level, abstractions relying on such tagged unions are common and useful, but use of ‘‘naked’’ union s is best minimized.
+
+## 2.5 Թվարկումներ
+
+Բացի դասերից C++ լեզուն պահում է? առաջարկում է (support) օգտագործողի կողմից սահմանված մեկ այլ տիպի պարզ ձև նույնպես, որի համար մենք կարող ենք թվարկել արժեքներ․
+
+````c++
+   enum class Color {red, blue, green};
+   enum class Traffic_light {green, yellow, red};
+
+   Color col = Color::red;
+   Traffic_light light = Traffic_light::red;
+```
+
+Ուշադրություն դարձրեք, որ թվարկված արժեքները (օր․ `red`) գտնվում են իրենց `թվարկման դասի` (`enum class`) տեսանելիության տիրույթում (`scope`), հետևաբար նրանք կարող են օգտագործվել մի քանի անգամ տարբեր `թվարկման դասերի` մեջ՝ առանց շփոթություն առաջացնելու։ Օրինակ `Color::red` արժեքը `Color` դասի `red` արժեքն է, որը տարբերվում է `Traffic_light::red` արժեքից։
+
+Թվարկումներն օգտագործվում են ամբողջ թվերի փոքր խմբեր ներկայացնելու համար։ Դրանք օգտագործվում են կոդն ավելի ընթեռնելի դարձնելու համար և less error-prone than it would have been had the symbolic (and mnemonic) enumerator names not been used.
+
+
+
 
 
 
