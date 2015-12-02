@@ -17,6 +17,7 @@ class Cartesian : public Point {
     public:
         Cartesian();
         Cartesian(double, double);
+        void setXY(double, double);
         void print();
         bool equal(const Cartesian &);
         Polar toPolar();
@@ -38,6 +39,12 @@ class Polar : public Point {
 
 Cartesian::Cartesian():x(0), y(0) {}
 Cartesian::Cartesian(double x1, double y1): x(x1), y(y1){}
+
+void Cartesian::setXY(double X1, double Y1)
+{
+    x = X1;
+    y = Y1;
+}
 
 void Cartesian::print()
 {
@@ -84,7 +91,7 @@ Cartesian Polar::toCartesian ()
 
 int main ()
 {
-    Polar PPoint1(45,10);
+    Polar PPoint1(1,10);
     PPoint1.print();
 
     Cartesian Point1 = PPoint1.toCartesian();
@@ -92,6 +99,9 @@ int main ()
 
     Cartesian Point2(5.25, 8.5);
     Point2.print();
+
+    Point1.setXY(12.5, 14.0);
+    Point1.print();
 
     Polar PPoint2 = Point2.toPolar();
     PPoint2.print();
