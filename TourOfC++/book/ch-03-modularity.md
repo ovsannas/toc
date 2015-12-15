@@ -196,7 +196,40 @@ mechanism for expressing that some declarations belong together and that their n
    }
 ````
 
-`throw` փոխանցումները ստուգում են `out_of_range` բացառությունները այնպիսի ֆունկցիաներում, որոնք ուղղակի կամ անուղղակի կոչվում են `Vector::operator[]()`???։ 
+`throw` փոխանցումները վերահսկում են `out_of_range` տիպի բացառությունների մշակիչին (handler) այնպիսի ֆունկցիաների մեջ, որոնք ուղղակիորեն կամ անուղղակիորեն կոչվում են `Vector::operator[]()`։ To do that, the implementation will unwind the function call stack as needed to get back to the context of that caller. That is, the exception handling mechanism will exit scopes and function as needed to get back to a caller that has expressed
+interest in handling that kind of exception, invoking destructors (§4.2.2) along the way as needed.
+For example:
+
+````c++
+   void f(Vector& v)
+   {
+      // ...
+      try { // այստեղ բացառությունները մշակվում են ներքևում սահմանված մշակիչի միջոցով
+
+             v[v.size()] = 7;   // փորձել դիմել v֊ից դուրս
+      }
+      catch (out_of_range) { // oops: out_of_range error
+             // ... մշակել սահմաններից դուրս սխալը ...
+      }
+      // ...
+   }
+````
+
+Բացառությունների մշակման համար մեր նախատեսած կոդը տեղադրում ենք `try`-բլոկում։ Հավասարությունը, որը փորձել ենք կատարել `v[v.size()]`֊ի հետ վերևում, կձախողվի։ Հետևաբար `catch`- կետը, որն ապահովում է `out_of_range`֊ի համար մշակիչ, կսկսի կատարվել։ `out_of_range` տիպը սահմանված է ստանդարտ գրադարանում (<stdexcept>֊ի մեջ) և փաստացի օգտագործվում է ստանդարտ գրադարանի` կոնտեյներներին դիմող ֆունկցիաների միջոցով։ 
+
+Բացառությունների մշակման մեխանիզմների օգտագործումը կարող է սխալների մշակման գործընթացը դարձնել ավելի պարզ, ավելի համակարգված և ավելի ընթեռնելի։ Այդ նպատակին հասնելու համար պետք չէ չարաշահել `try`֊հրամանները։ Սխալների մշակումը պարզ և համակարգված դարձնելու գլխավոր մեթոդը (որը կոչվում է Resource Aquisition Is Initialization) բացատրված է §4.2.2.-ում։
+
+Այն ֆունկցիան, որը երբեք դուրս չի բերելու որևէ բացառություն կարող է հայտարարվել `noexcept`։ Օրինակ․
+
+````c++
+   void user(int sz) noexcept
+   {
+      Vector v(sz);
+      iota(&v[0], &v[sz],1); // լցնել v֊ն 1,2,3,4... ֊ով
+   }
+````
+
+Եթե բոլոր լավ նպատակներն ու ծրագրերը ձախողվեն, so that user() still throws, այդ դեպքում կանչվում է ստանդարտ գրադարանի `terminate()` ֆունկցիան` ծրագիրն անհապաղ վերջացնելու համար։
 
 
 
