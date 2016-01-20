@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 class Point {
     private:
@@ -8,18 +9,20 @@ class Point {
         double z;
 
     public:
+        Point();
         Point(double, double, double); 
-        double distance(Point);
+        double distance(Point &);
         void print();
 };
 
+Point::Point(): x(0), y(0), z(0) {}
 Point::Point (double x1, double y1, double z1): x(x1), y(y1), z(z1){}
 
-double Point::distance (Point nextP)
+double Point::distance (Point & nextP)
 {
-    double dx = std::abs(nextP.x-x);
-    double dy = std::abs(nextP.y-y);
-    double dz = std::abs(nextP.z-z);
+    double dx = nextP.x-x;
+    double dy = nextP.y-y;
+    double dz = nextP.z-z;
 
     double d = std::sqrt(dx*dx + dy*dy + dz*dz);
 
@@ -32,30 +35,66 @@ void Point::print()
     std::cout << std::endl;
 }
 
+double MaxDistance(std::vector<Point> &, Point &, Point &);
+
+
 int main()
 {
-    Point P[] = {{2,-5,7}, {-4,8,3},{1,0,9}, {-6,10,5}, {7,3,2}};
+    int x;
+    int y;
+    int z;
+    int n;
 
+    std::cout << "n: ";
+    std::cin >> n;
+
+    std::vector<Point> vP;
+    for(int i = 0; i < n; i++)
+    {
+        std::cout << "x = ";
+        std::cin >> x;
+        std::cout << "y = ";
+        std::cin >> y;
+        std::cout << "z = ";
+        std::cin >> z;
+
+        Point P1(x,y,z);
+        vP.push_back(P1);
+    }
+
+    Point bP;
+    Point eP;
+
+    double D = MaxDistance (vP,bP,eP);
+
+    std::cout << "Ամենամեծ հեռավորությունը՝ " << D << std::endl;
+
+    bP.print();
+    eP.print();
+
+
+    return 0;
+    
+}
+
+
+double MaxDistance (std::vector<Point> &P, Point &Pb, Point &Pe)
+{
     double Max = 0;
-    int b = 0;
-    int e = 0;
-    for (int i = 0; i <= 4; i++)
-        for (int j = i+1; j <= 4; j++)
+        
+    for (int i = 0; i < P.size(); i++)
+        for (int j = i+1; j < P.size(); j++)
         {
             double d = P[i].distance(P[j]);
             if (d > Max){
                 Max = d;
-                b = i;
-                e = j;
+                Pb = P[i];
+                Pe = P[j];
             }
         }
+    
 
-    std::cout << "ամենամեծ հեռավորությունը՝ " << Max << std::endl;
-    P[b].print();
-    P[e].print();
-
-
-    return 0;
+    return Max;
 }
 
 
