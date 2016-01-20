@@ -40,27 +40,15 @@ double MaxDistance(std::vector<Point> &, Point &, Point &);
 
 int main()
 {
-    int x;
-    int y;
-    int z;
-    int n;
-
-    std::cout << "n: ";
-    std::cin >> n;
+    double x;
+    double y;
+    double z;
 
     std::vector<Point> vP;
-    for(int i = 0; i < n; i++)
-    {
-        std::cout << "x = ";
-        std::cin >> x;
-        std::cout << "y = ";
-        std::cin >> y;
-        std::cout << "z = ";
-        std::cin >> z;
-
-        Point P1(x,y,z);
-        vP.push_back(P1);
-    }
+        
+    while(std::cin >> x >> y >> z)
+       vP.push_back({x,y,z});
+    
 
     Point bP;
     Point eP;
