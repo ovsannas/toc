@@ -10,6 +10,7 @@ class Point {
     public:
         Point(double, double, double); 
         double distance(Point);
+        void print();
 };
 
 Point::Point (double x1, double y1, double z1): x(x1), y(y1), z(z1){}
@@ -23,6 +24,12 @@ double Point::distance (Point nextP)
     double d = std::sqrt(dx*dx + dy*dy + dz*dz);
 
     return d;
+}
+
+void Point::print()
+{
+    std::cout << "{" << x << "," << y << "," << z << "}";
+    std::cout << std::endl;
 }
 
 int main()
@@ -44,8 +51,8 @@ int main()
         }
 
     std::cout << "ամենամեծ հեռավորությունը՝ " << Max << std::endl;
-    std::cout << P[b] << std::endl;
-    std::cout << P[e] << std::endl;
+    P[b].print();
+    P[e].print();
 
 
     return 0;
