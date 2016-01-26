@@ -1,23 +1,35 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cctype>
 
-bool isLetter (char);
+void splitLine (std::string &, std::vector<std::string> &);
 
 int main()
 {
-    std::string line = "abcdsg, sdkjsd, ksdjasd";
+    std::string Line = "Hello, how are you?";
+    std::vector<std::string> Words;
 
-    std::vector<std::string> words;
+    splitLine (Line, Words);
 
+    for(auto s: Words)
+        std::cout << s << std::endl;
+
+
+    return 0;
+}
+
+
+void splitLine (std::string & line, std::vector<std::string> & words)
+{
     std::string bar;
 
     for (char c : line)
     {
-        if (isLetter(c))
-            {
-                bar = bar + c;
-            }
+        if (isalpha(c))
+        {
+            bar = bar + c;
+        }
 
         else
         {
@@ -25,19 +37,9 @@ int main()
                 words.push_back(bar);
             bar = "";
         }
-         
+
     }
     if(!bar.empty())
         words.push_back(bar);
 
-    for(int i = 0; i < words.size(); i++)
-        std::cout << words[i] << std::endl;
-
-
-    return 0;
-}
-
-bool isLetter(char c)
-{
-    return ((c >= 'a')&& (c <= 'z')) || ((c >= 'A')&&(c <= 'Z'));
 }
