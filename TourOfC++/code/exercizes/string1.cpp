@@ -26,7 +26,7 @@ void splitLine (std::string & line, std::vector<std::string> & words)
 
     for (char c : line)
     {
-        if (isalpha(c))
+        if (!isspace(c))
         {
             bar = bar + c;
         }

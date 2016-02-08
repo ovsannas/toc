@@ -9,7 +9,9 @@ void alignLeft(const std::vector<std::string> &, int);
 void alignRight (const std::vector<std::string> &, int);
 void alignCenter (const std::vector<std::string> &, int);
 
-void alignText (const std::vector<std::string> &, int, int);
+enum class alignment {left, right, center};
+
+void alignText (const std::vector<std::string> &, int, alignment);
 
 int main()
 {
@@ -19,14 +21,15 @@ int main()
 
     splitText (Text, Words);
 
-    alignLeft (Words, 26);
+//    alignment a = alignment::left;
+
+    alignText (Words, 36, alignment::left);
+    std::cout << std::endl;
+    alignText (Words, 36, alignment::right);
+    std::cout << std::endl;
+    alignText (Words, 36, alignment::center);
     std::cout << std::endl;
 
-    alignRight (Words, 16);
-    std::cout << std::endl;
-
-    alignCenter (Words, 26);
-    std::cout << std::endl;
 
  
    return 0;
@@ -62,51 +65,42 @@ void splitText (std::string & text, std::vector<std::string> & words)
 
 }
 
-void alignText(const std::vector<std::string> & W, int C, int S)
+void alignText(const std::vector<std::string> & W, int C, alignment A)
 {
-        std::string line;
-        int length_w = 0;
+    std::string line;
+    int length_w = 0;
 
-        if (S == 0)
+    for (std::string w : W)
+    {
+        if (length_w + w.size() > C)
         {
-            for (std::string w : W)
+            --length_w;
+            line.pop_back();
+
+            switch(A)
             {
-                if (length_w + w.size() > C)
-                {
-                    if (S == 0)
-                    {                      
-                        std::cout << line << std::endl;
-                        length_w = 0;
-                        line = "";
-                    }
-                    length_w += w.size() + 1;
-                    line += line + w;
+                case alignment::left:
+                    break;
+                    
+                case alignment::right:
+                    printSpaces(C-length_w);
+                    break;
 
-                    else if (S == C-length_w)
-                    {
-                        --length_w;
-                        line.pop_back();
-
-                        printSpaces(C - length_w);
-                        std::cout << line << std::endl;
-
-                        length_w = 0;
-                        line = "";
-
-                    }
-                length_w += w.size() + 1;
-                line += line + w;
+                case alignment::center:
+                    printSpaces((C - length_w)/2);
+                        break;
             }
+            
+            std::cout << line << std::endl;
+            length_w = 0;
+            line = ""; 
         }
-
-        else if (S == C - length_w)
-        {
-            for (std::string w : W)
-                if ()
-        }
-
+        length_w += w.size()+ 1;
+        line = line + w + ' ';
+    }     
+            
 }
-
+       
 void alignLeft (const std::vector<std::string>& W, int C)
 {
     std::string line;
