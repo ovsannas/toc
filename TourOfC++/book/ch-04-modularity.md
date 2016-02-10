@@ -84,7 +84,14 @@ C++ լեզվի կենտրոնական առանձնահատկությունը (գ
 Շատ օգտակար գործողություններ չեն պահանջում ուղիղ դիմում `complex` տիպի ներկայացմանը, այդպիսով նրանք կարող են սահմանվել դասի սահմանումից առանձին․
 
 ````c++
+   complex operator+(complex a, complex b) {return a += b;}
+   complex operator-(complex a, complex b) {return a -= b;}
+   complex operator-(complex a) {return {-a.real(), -a.imag()};}      // ունար հանում
+   complex operator*(complex a, complex b) {return a *= b;}
+   complex operator/(complex a, complex b) {return a /= b;}
 ````
+
+Այստեղ ես օգտագործում եմ այն փաստը, որ արժեքով փոխանցված արգումենտը պատճենվում է, հետևաբար ես կարող եմ ձևափոխել արգումենտը առանց
 
 
 
