@@ -110,7 +110,7 @@ C++ լեզվի կենտրոնական առանձնահատկությունը (գ
 
    // ...
 ````
-http://www.edimdoma.ru/retsepty/79024-bystryy-pirog-s-vetchinoy-i-syrom
+
 `complex` դասը կարող է օգտագործվել այսպես․
 
 ````c++
