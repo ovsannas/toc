@@ -304,11 +304,22 @@ and keep them buried inside the implementation of well-behaved abstractions. Sim
             List_container (initializer_list <double> il) : ld{il} {}
             ~List_container() {}
 
-            double & operator[](int i)
-            {
+            double & operator[](int i);
+            int size() const {return ld.size();}
 
+   };
 
+   double & List_container::operator[] (int i)
+   {
+         for (auto & x : ld) {
+               if (i == 0) return x;
+               --i;
+         }
+         throw out_of_range ("List container");
+   }
 ````
+
+Այստեղ ներկայացումը ստանդարտ գրադանի `list<double>`_ն է։ Սովորաբար ես չեմ իրականացնի կոնտեյները subscript գործողությամբ, օգտագործելով `list`֊ը, որովհետև `list`֊ի ներկայացումը subscripting is atrocious compared to vector subscripting։ Ինչևէ, այստեղ ես ցանկացա ցույց տալ մի իրականացում, որը հիմնովին տարբերվում է սովորականից։ 
   
 
 
