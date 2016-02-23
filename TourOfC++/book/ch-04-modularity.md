@@ -282,7 +282,34 @@ and keep them buried inside the implementation of well-behaved abstractions. Sim
 
 `public:` բառը կարող է կարդացվել որպես «ժառանգված է» կամ «ենթատեսակ»։ Ասում են, որ `Vector_container` դասը *ժառանգված է* `Container` դասից և `Container` դասը `Vector_container` դասի *բազային* դասն է։ Այլընտրանքային տերմինոլոգիան անվանում է `Vector_container`֊ը և `Container`֊ը *ենթադաս* և *ծնող դաս* համապատասխանաբար։ Ասում են, որ ժառանգված դասը ժառանգում է իր բազային դասի անդամները, այսպիսով բազային և ժառանգված դասերի օգտագործումը սովորաբար կոչվում է *ժառանգում*։ 
 
-   
+`operator[]()` և `size()` անդամներն, ասում են *վերասահմանում են* *(override)* համապատասխան անդամները `Container` բազային դասում։ Դեստրուկտորը (`~Vector_container()`) վերասահմանում է բազային դասի դեստրուկտորը (`Container()`)։ Ուշադրություն դարձրեք, որ դեստրուկտոր անդամը (`~Vector()`) ոչ ակնհայտորեն կանչվում է իր դասի դեստրուկտորի կողմից (`~Vector_container()`)։ 
+
+`use(Container&)`֊ի նման ֆունկցիայի համար, որպեսզի կարողանա օգտագործել `Container`֊ը՝ ամբողջությամբ անտեսելով իրականացման դետալները, որոշ այլ ֆունկցիաներ պետք է ստեղծեն մի օբյեկտ, որի վրա այն կարող է աշխատել։ Օրինակ․
+
+````c++
+   void g()
+   {
+         Vector_container vc {10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+         use (vc);
+   }
+````
+
+Քանի դեռ `use()`֊ը չգիտի `Vector_container`֊ի ինտերֆեյսի մասին, բայց գիտի միայն `Container`֊ի ինտերֆեյսը, այն կաշխատի `Container`-ի մեկ ուրիշ իրականացման համար։ Օրինակ․
+
+````c++
+   class List_container : public Container {      // List_container֊ն իրականացնում է Container֊ը
+         std::list<double> ld;      //  (ստանդարտ֊գրադարան) իրական թվերի ցուցակ (§9.3)
+   public: 
+            List_container() {}      // դատարկ ցուցակ
+            List_container (initializer_list <double> il) : ld{il} {}
+            ~List_container() {}
+
+            double & operator[](int i)
+            {
+
+
+````
+  
 
 
 
