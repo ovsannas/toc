@@ -338,6 +338,27 @@ and keep them buried inside the implementation of well-behaved abstractions. Sim
 
 ## 4.4 Վիրտուալ ֆունկցիաներ
 
+Եկեք դիտարկենք կրկին `Container` դասի կիրառումը․
+
+````c++
+   void use (Container & c)
+   {
+         const int sz = c.size();
+
+         for (int i = 0; i != sz; ++i)
+                  cout << c[i] << '\n';
+   }
+````
+
+Ինչպե՞ս է `c[i]`֊ի կանչը `use()`֊ում լուծվում ճիշտ `operator[]()`֊ի կողմը։ Երբ `h()`֊ն կանչում է `use()`֊ին, պետք է կանչվի `List_container`֊ի `operator[]()` ֆունկցիա֊անդամը։ Երբ `g()`֊ն կանչում է `use()`֊ին, պետք է կանչվի `Vector_container`֊ի `operator[]()` ֆունկցիա֊անդամը։ Այս լուծմանը հասնելու համար `Container`դասի օբյեկտը պետք է պարունակի ինֆորմացիա, որը թույլ կտա նրան  կատարման ժամանակ ընտրել կանչի համար ճիշտ ֆունկցիան։ The usual implementation technique is for the compiler to convert the name of a virtual function into an index into a table of pointers to functions. Այդ աղյուսակը սովորաբար կոչվում է *վիրտուալ ֆունկցիաների աղյուսակ* կամ պարզապես `vtbl`։ Վիրտուալ ֆունկցիաներով յուրաքանչյուր դաս ունի իր սեփական `vtbl`, որն իդենտիֆիկացնում է նրա վիրտուալ ֆունկցիաները։ Սա գրաֆիկորեն կարելի է ներկայացնել հետևյալ կերպ․
+
+նկար 4.4
+
+`vtbl`֊ի ֆունկցիաները թույլ են տալիս օբյեկտին ունենալ ճիշտ կիրառություն, նույնիսկ եթե օբյեկտի չափը և նրա տվյալների դասավորությունը հայտնի չեն կանչողին։ Կանչողի (caller) իրականացման մեջ պետք է հայտնի լինի միայն `vtbl`֊ի ցուցիչի տեղը `Container`֊ում և յուրաքանչյուր վիրտուալ ֆունկցիայի համար օգտագործվող ինդեքսը։ Այս վիրտուալ կանչի մեխանիզմը կարող է դառնալ այնքան էֆեկտիվ, որքան «նորմալ ֆունկցիայի կանչի» մեխանիզմն է (within 25%)։ Its space overhead is one pointer in each object of a class with virtual functions plus one `vtbl` for each such class.
+
+
+## 4.5 Դասերի հիերարխիան
+
 
 
 
