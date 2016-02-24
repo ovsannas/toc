@@ -405,6 +405,60 @@ and keep them buried inside the implementation of well-behaved abstractions. Sim
    };
 ````
 
+So far, the `Shape`and `Circle` example provides nothing new compared to the `Container` and `Vector_container` example, but we can build further:
+
+````c++
+   class Smiley : public Circle {   // օգտագործել շրջանը որպես բազային դաս դեմքի համար
+   public:
+            Smiley (Point p, int r) : Circle {p,r}, mouth {nullptr} {}
+
+            ~Smiley()
+            {
+                   delete mouth;
+                   for (auto p : eyes)
+                             delete p;
+            }
+
+            void move (Point to);
+
+             void draw() const;
+             void rotate (int);
+
+             void add_eye(Shape* s) {eyes.push_back(s);}
+             void set_mouth (Shape* s);
+             virtual void win k(int i);      // wink eye number i
+
+             // ...
+
+   private:
+            vector <Shape*> eyes;      // usually two eyes
+            Shape* mouth;
+   };
+````
+
+`push_back` անդամ֊ֆունկցիան իր արգումենտն ավելացնում է `vector`֊ին՝ (այստեղ `eyes`֊ն է) ավելացնելով այդ վեկտորի չափը մեկով։
+
+Այժմ մենք կարող ենք սահմանել `Smiley::draw()` ֆունկցիան՝ օգտագործելով `Smiley`֊ի բազային դասի և `draw()`անդամ֊ֆունկցաների կանչերը․
+
+````c++
+   void Smiley::draw()
+   {
+         Circle::draw();
+         for (auto p : eyes)
+                  p -> draw();
+         mouth -> draw();
+   }
+````
+
+
+
+
+
+
+
+
+
+
 
 
 
