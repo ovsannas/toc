@@ -459,6 +459,47 @@ So far, the `Shape`and `Circle` example provides nothing new compared to the `Co
 
 ## 4.5.1 Բացահայտ վերասահմանում
 
+Ժառանգ դասի ֆունկցիան վերասահմանում է բազային դասում գտնվող վիրտուալ ֆունկցիան, եթե այդ ֆունկցիան ունի ճիշտ նույն անունն ու տիպը։ Մեծ հիերարխիաներում միշտ չէ, որ ակնհայտ է, թե վերասահմանումը նախատեսված է։ Ֆունկցիան թեթևակի տարբերվող անունով կամ թեթևակի տարբերվող տիպով կարող է նախատեսված լինել վերասահմանվելու համար կամ կարող է նախատեսված լինել համարվելու առանձին ֆունկցիա։ Այսպիսի դեպքերում խառնաշփոթից խուսափելու համար ծրագրավորողը կարող է բացահայտորեն հաղորդել, որ ֆունկցիան նախատեսվում է վերասահմանել։ Օրինակ I could (equivalently) have defined Smiley like this:
+
+````c++
+   class Smiley : public Circle {   // օգտագործել շրջանը, որպես բազային դեմքի համար
+   public:
+            Smiley (Point p, int r) : Circle {p,r}, mouth{nullptr} {}
+
+            ~Smiley()
+            {
+                  delete mouth;
+                  for (auto p : eyes)
+                            delete p;
+            }
+
+            void move (Point to) override;
+
+            void draw() const override;
+            void rotate(int) override;
+
+            void add_eye(Shape* s) {eyes.push_back(s);}
+            void set_mouth(Shape* s);
+            virtual void win (int i);         // wink աչքի i թիվը
+
+            // ...
+
+   private:
+            vector <Shape*> eyes;      // սովորաբար երկու աչք
+            Shape* mouth;
+   };
+````
+
+Now, had I mistyped `move` as `mve`, I would have gotten an error because no base of `Smiley` has a virtual function called `mve`. Similarly, had I added `override` to the declaration of `wink()`, I would have gotten an error message.
+
+
+## 4.5.2 Հիերարխիաների օգուտները
+
+Դասերի հիերարխիան տալիս է երկու տեսակի օգուտ․
+* 
+
+
+
 
 
 
