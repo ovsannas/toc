@@ -185,7 +185,7 @@ Don't Panic!
    }
 ````
 
-Maintaining the correspondence between a type field (here, t ) and the type held in a union is errorprone. To avoid errors, one can encapsulate a union so that the correspondence between a type field and access to the union members is guaranteed. At the application level, abstractions relying on such tagged unions are common and useful, but use of ‘‘naked’’ union s is best minimized.
+Maintaining the correspondence between a *type field* (here, `t` ) and the type held in a `union` is errorprone. To avoid errors, one can encapsulate a union so that the correspondence between a type field and access to the union members is guaranteed. At the application level, abstractions relying on such tagged unions are common and useful, but use of ‘‘naked’’ union s is best minimized.
 
 ## 2.5 Թվարկումներ
 
