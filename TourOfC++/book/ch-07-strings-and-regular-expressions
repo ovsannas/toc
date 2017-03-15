@@ -1,0 +1,38 @@
+# Տողեր և կանոնավոր արտահայտություններ
+
+Prefer the standard to the offbeat.
+– Strunk & White
+
+
+* Ներածություն
+* Տողեր
+      `string`֊ի իրականացումը
+* Կանոնավոր արտահայտություններ
+	Փնտրում; Կանոնավոր արտահայտությունների գրառման ձևը; Իտերատորներ
+* Խորհուրդներ
+
+##7.1 Ներածություն
+
+Տեքստային գործողությունները կազմում են շատ ծրագրերի մեծ մասը։ C++-ի ստանդարտ գրադարանն առաջարկում է `string` տիպը, օգտագործողների մեծ մասին C-ոճի՝ սիմվոլների (նիշերի) զանգվածների հետ ցուցիչների միջոցով աշխատանքից հեռու պահելու համար։ Բացի այդ, կանոնավոր արտահայտությունների հետ համընկնումը առաջարկվում է, որպեսզի օգնի գտնել տեքստի մեջ օրինակներ։ The regular expressions are
+provided in a form similar to what is common in most modern languages. Both string s and reg ex
+objects can use a variety of character types (e.g., Unicode).
+
+##7.2 Տողեր
+
+Ստանդարտ գրադարանն ապահովում է `string` տիպը string litarals լրացնելու համար(§1.3)։ `string` տիպն ապահովում է տարբեր օգտակար գործողություններ տողերի հետ, ինչպիսին է օրինակ կոնկատենացիան։ Օրինակ
+
+````c++
+	string compose(const string& name, const string& domain)
+	{
+		return name + '@' + domain;
+	}
+
+	auto addr = compose("dmr", "bell-labs.com");
+````
+
+
+
+
+
+
+
