@@ -1,8 +1,8 @@
 # Դասեր
 
-Those types are not "abstract";
-they are as real as `int` and `float`.
--Doug Mcllroy
+Այդ տիպերը «վերացական» չեն. դրանք այնքան  
+իրական են, որքան `int`-ը և `float`-ը։  
+— Դաֆ Մակլորի (Doug Mcllroy)
 
 
 * Ներածություն
