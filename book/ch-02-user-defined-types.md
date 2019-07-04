@@ -242,7 +242,7 @@ void f(Entry* pe)
 C++ լեզուն դասերին ավելացնում է  օգտագործողի սահմանած տիպի մեկ պարզ ձև, որի համար մենք կարող ենք թվարկել արժեքներ․
 
 ````C++
- enum class Color {red, blue, green};
+ enum class Color { red, blue, green};
  enum class Traffic_light {green, yellow, red};
 
  Color col = Color::red;
