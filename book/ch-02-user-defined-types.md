@@ -132,14 +132,14 @@ This is the basic technique for handling varying amounts of information in C++: 
 ````C++
 double read_and_sum (int s)
 {
-     Vector v(s);                      // ստեղծվում է s տարրերի վեկտոր
-     for (int i=0; i!=v.size(); ++i)
+    Vector v(s);                      // ստեղծվում է s տարրերի վեկտոր
+    for (int i=0; i!=v.size(); ++i)
         cin >> v[i];                   // կարդում ենք տարրերը
 
-     double sum = 0;
-     for (int i=0; i!=v.size(); ++i)
-        sum+=v[i];                     // հաշվում ենք տարրերի գումարը
-     return sum;
+    double sum = 0;
+    for (int i=0; i!=v.size(); ++i)
+        sum += v[i];                     // հաշվում ենք տարրերի գումարը
+    return sum;
 }
 ````
 
@@ -228,7 +228,7 @@ struct Entry {
 
 void f(Entry* pe)
 {
-    if (holds_alternative<int>(pe−>v))  // *pe-ում int արժե՞ք է (տես §13.5.1)
+    if (holds_alternative<int>(pe−>v))  // *pe-ում int արժե՞ք է (տես §13.5.1) /**/
         cout << get<int>(pe−>v);        // վերցնել int արժեքը
     // ...
 }
@@ -239,34 +239,41 @@ void f(Entry* pe)
 
 ## 2.5 Թվարկումներ
 
-C++ լեզուն դասերին ավելացնում է  օգտագործողի սահմանած տիպի մեկ պարզ ձև, որի համար մենք կարող ենք թվարկել արժեքներ․
+Ի լրումն դասերի, C++-ը տրամադրում է օգտագործողի սահմանած մի պարզ տիպ՝ արժեքների թվարկելիության հնարավորությամբ. ??
 
-````C++
- enum class Color {red, blue, green};
- enum class Traffic_light {green, yellow, red};
+```C++
+enum class Color { red, blue, green };
+enum class Traffic_light { green, yellow, red };
 
- Color col = Color::red;
- Traffic_light light = Traffic_light::red;
+Color col = Color::red;
+Traffic_light light = Traffic_light::red;
 ````
 
-Նշենք, որ թվարկված արժեքները (օր․ `red`) գտնվում են իրենց `enum class`֊ի տեսանելիության տիրույթում, հետևաբար նրանք կարող են բազմիցս օգտագործվել  տարբեր `enum class`֊երի մեջ՝ առանց շփոթություն առաջացնելու։ Օրինակ `Color::red` արժեքը `Color`֊ի `red` արժեքն է, որը տարբերվում է `Traffic_light::red` արժեքից։
+Ուշադրություն դարձրեք, որ թվարկելիներն (օր., `red`) իրենց սեփական `enum class`-ի տիրույթում են, այսինքն դրանք կարող են առանց շփոթելու վտանգի կրկնվել տարբեր `enum classe`-երում։ Օրինակ, `Color::red`-ը `Color`-ի `red`-ն է, որը տարբեր է `Traffic_light::red`-ից։
 
-Թվարկումներն օգտագործվում են ամբողջ թվերի փոքր խմբեր ներկայացնելու համար։ Դրանք օգտագործվում են կոդն ավելի ընթեռնելի դարձնելու համար և ավելի քիչ են ենթարկվում սխալների than it would have been had the symbolic (and mnemonic) enumerator names not been used.
+Թվարկումներն օգտագործվում են ամբողջաթիվ արժեքների փոքր խմբեր ներկայացնելու համար։ Դրանք օգտագործվում են ծրագրի տեքստն ավելի ընթեռնելի և սխալների հնարավորությունից ավելի զերծ պահելու համար, քան դա դա կարելի էր անել առանց սիմվոլիկ (և հեշտ հիշվող՝ մնեմոնիկ) թվարկվող անունների օգտագործամբ։ ??
 
-`class` անունը `enum`֊ից հետո ցույց է տալիս, որ թվարկման տիպը խստորեն որոշված է և նրա թվարկված արժեքներն ունեն իրենց տեսանելիության տիրույթը։ Լինելով առանձնացված տիպեր `enum class`֊երն օգնում են կանխել հաստատունների պատահական սխալ գործածությունը։ Մասնավորապես մենք չենք կարող շփոթել `Traffic_light`֊ի և `Color`֊ի արժեքները․
-
-````C++
-Color x= red;                    // սխալ է․ պետք է նշել, թե որ red արժեքն է
-Color y = Traffic_light::red;    // սխալ է․ սա Color֊ի red արժեքը չէ
-Color z = Color::red;            // ճիշտ է
-````
-
-Նմանապես, չենք կարող խառնել `Color` թվարկման արժեքները և ամբողջ թվերը․
+`enum`-ից հետո գրված `class`-ը նշում է, որ թվարկումը խիստ տիպիզացված է և դրա թվարկելիներն իրենց սեփական տիրույթում են։ Լինելով առանձին տիպեր, `enum class`-ներն օգնում են խուսափել հաստատունների պատահական շփոթումից։ ?? Մասնավորապես, մենք չենք կարող շփոթել `Traffic_light` և `Color` արժեքները.
 
 ````C++
-int i = Color::red;              // սխալ է․ Color::red֊ը ամբողջ թիվ չէ
-Color c = 2;                     // սխալ է․ 2-ը Color չէ
+Color x = red;                  // սխալ. ո՞րh red-ը
+Color y = Traffic_light::red;   // սխալ. այս red-ը Color-ց չէ
+Color z = Color::red;
 ````
+
+Նմանապես, չենք կարող `Color`-ի արժեքները և ամբողջ թվերը օգտագործել իրար հետ․
+
+````C++
+int i = Color::red;        // սխալ, Color::red-ը int չէ
+Color c = 2;               // ինիցիալիզացիայի սխալ, 2-ը Color-ց չէ
+````
+
+`enum`-ի Catching attempted conversions to an enum is a good defense against errors, but often we want to initialize an enum with a value from its underlying type (by default, that’s int), so that’s allowed, as is explicit conversion from the underlying type:
+
+```C++
+Color x = Color{5};  // OK, but verbose
+Color y {6};         // also OK
+```
 
 Լռությամբ `enum class`֊ն ունի սահմանված հավասարության, ինիցիալիզացիայի և համեմատության գործողությունները (օր․`==` և `<`; §1.5)։ Սակայն թվարկումն օգտագործողի կողմից սահմանված տիպ է, հետևաբար մենք ինքներս կարող ենք նրա համար սահմանել  օպերատորներ․
 
