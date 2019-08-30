@@ -56,3 +56,70 @@ template<Sequence Seq, Number Num>
     requires Arithmetic<Value_type<Seq>,Num>
 Num sum(Seq s, Num n);
 ````
+
+Հաջորդականության համար `Value_type`-ը նրա տարրերի տիպն է։ `Arithmetic<X,Y>`-ը կոնցեպտ է, որով որոշվում է, որ `X` և `Y` տիպերի թվերի հետ կարող ենք թվաբանական գործողություններ կատարել։ Սա մեզ ապահովում է `vector<string>`-ի կամ `vector<int*>`-ի գումարը պատահաբար հաշվելու փորձերից, միևնույն ժամանակ թույլատրելով `vector<int>`-ը և `vector<complex<double>>`-ը։
+
+Այս օրինակում մեզ անհրաժեշտ է միայն `+=`-ը, բայց, պարզության ու ճկունության համար, պետք չէ կաղապարի արգումենտն այդքան խիստ սահմանափակենլ։ Մասնավորապես, ինչ-որ մի օր կարող է ուզենանք `sum()`-ն արտահայտել `+` և `=` գործողությունների, այլ ոչ թե `+=`-ի միջոցով, և այդ ժամանակ հաճելի կլինի տեսնել, որ ընտրել ենք ավելի ընդհանուր կոնցեպտ (այս դեպքում, `Arithmetic`), քան պարզապես «`+=`-ը ունենալու» նեղ պահանջը։ (?)
+
+Կոնցեպտներն օգտագործող `sum()`-ի առաջին օրինակի ոչ լրիվ գրառումը կարող է շատ օգտակար լինել։ (?) Եթե գրառումը լրիվ չէ, ապա որոշ սխալներ չեն կարող հայտնաբերվել մինչև նմուշի ստեղծումը։ (?)  However, partial specifications can help a lot, express intent, and are essential for smooth incremental development where we don’t initially recognize all the requirements we need. Կոնցեպտների հասուն գրադարանի առկայության դեպքում սկզբնական գրառումները շատ մոտ կլինեն կատարյալին։
+
+Զարմանալի չէ, որ `requires Arithmetic<Value_type<Seq>,Num>` արտահայտությունը կոչվում է `requirements`-պայման։ `template<Sequence Seq>` գրառումը պարզապես `requires Sequence<Seq>` բացահայտ գրառման համառոտ տեսքն է։ Ավելի խոսուն լինելու համար կարող էի գրել հետևյալ համարժեքը.
+
+````C++
+template<typename Seq, typename Num>
+    requires Sequence<Seq> && Number<Num> && Arithmetic<Value_type<Seq>,Num>
+Num sum(Seq s, Num n);
+````
+
+Մյուս կողմից էլ, երկու գրառումների համարժեքությունն օգտագործելով, կարող ենք գրել.
+
+````C++
+template<Sequence Seq, Arithmetic<Value_type<Seq>> Num>
+Num sum(Seq s, Num n);
+````
+
+Եթե ինչ-որ տեղ չենք կարող օգտագործել կոնցեպտները, ապա ստիպված ենք բավարարվել անուններ տալու պայմանավորվածություններով և նեկնաբանություններով։ Օրինակ, այսպես.
+
+````C++
+template<typename Sequence, typename Number>
+    // requires Arithmetic<Value_type<Sequence>,Number>
+Numer sum(Sequence s, Number n);
+````
+
+Ինչպիսի գրառում էլ որ ընտրելու լինենք, կարևոր է, որ կաղապարները նախագծենք նրա արգումենտների սեմանտիկորեն իմաստալից սահմանափակումներով (§7.2.4)։ (?)
+
+
+### Կոնցեպտների վրա հիմնված գերբեռնում
+
+Երբ արդեն ունենք պատշաճ կերպով սահմանված կաղապարներն իրենց ինտերֆեյսներով, կարող ենք գերբեռնում իրականացնե նրանց հատկությունների հիման վրա, ինչպես անում էինք ֆունկցիաների համար։ Դիտարկենք ստանդարտ գրադարանի՝ իտերատորի արժեքը մեծացնող `advance()` ֆունկցիայի (§12.3) մի քիչ պարզեցված տարբերակը։ (?)
+
+````C++
+template<Forward_iterator Iter>
+void advance(Iter p, int n)        // move p n elements forward
+{
+    for ( ; −−n; )
+        ++p;    // a forward iterator has ++, but not + or +=
+}
+
+template<Random_access_iterator Iter, int n>
+void advance(Iter p, int n)        // move p n elements forward
+{
+    p += n;        // a random-access iterator has +=
+}
+````
+
+Կոմպիլյատորը կընտրի արգումենտների պահանջներին ամենաճիշտը բավարարող կաղապարը։ Այս դեպքում `list` պարունակում է միայն forward? իտերատորները, իսկ `vector`-ը՝ random-access? իտերատորները։ Այսինքն ստանում ենք. (??)
+
+````C++
+void user(vector<int>::iterator vip, list<string>::iterator lsp)
+{
+    advance(vip,10);   // use the fast advance()
+    advance(lsp,10);   // use the slow advance()
+}
+````
+
+Ինչպես և այլ գերբեռնումները, սա նույնպես կոմպիլյացիայի ժամանակի մեխանիզմ է, որը կատարման ժամանակի որևէ բարդություն չի ավելացնում, և եթե կոմպիլյատորը լավագույն տարբերակը չի գտնում՝ ազդարարում է անորոշության սխալի մասին։ Կոնցեպտների վրա հիմնված գեորբեռնման կանոնները շատ ավելի պարզ են քան ընդհանուր գերբեռնման կանոնները (§1.3)։ Նախ դիտարկենք ֆունկցիաների մի քանի տարբերակների միակ արգումենտը. (??)
+* Եթե արգումենտը չի համապատասխանում կոնցեպտին, այդ տարբերակը չի կարող ընտրվել։
+* Եթե արգումենտը կոնցեպտին համապատասխանում է միայն մեկ տարբերակի համար, ապա հենց այդ տարբերակն էլ ընտրվում է։
+* If arguments from two alternatives are equally good matches for a concept, we have an ambiguity.
+* If arguments from two alternatives match a concept and one is stricter than the other (match all the requirements of the other and more), that alternative is chosen.
