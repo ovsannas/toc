@@ -228,3 +228,64 @@ cout << duration_cast<nanoseconds>(t1−t0).count() << " nanoseconds passed\n";
 Ուշադրություն դարձրեք, որ ես նույնիսկ նոր հոսք չգործարկեցի. լռելությամբ `this_thread`-ը հղվում է մեկ ու միակ հոսքի։ (?)
 
 Ես `duration_cast`-ն օգտագործել եմ ինձ հարկավոր նանովարկյանների ձևափոխելու համար։
+
+Արտաքին պատահարների օգտագործմամբ հաղորդակցվելու հնարավորություն է տալիս `<condition_variable>`-ում սահմանված `condition_variable`-ը։ Սա մի մեխանիզմ է, որ մի հասքին թույլ է տալիս սպասել մի այլ հասքի աշխատանքին։ (?) մասնավորապես, այն հոսքին հնարավորություն է տալիս սպասել մեկ այլ հասքի կատարման արդյունքում տեղի ունեցող ինչ-որ _պայմանի_ (հաճախ կոչվում է _պատահար_)։ (??)
+
+Պայմանական փոփոխականների օգտագործումը, որն ապահովում է տվյալների համատեղ օգտագործման շատ գեղեցիկ ու արդյունավետ եղանակներ, կարող է նաև բավականին խրթին լինել։ Դիտարկենք հերթի միջոցով հաղորդագրություններ փոխանակող երկու հասքերի դասական օրինակը։ Պարզության նպատակով հերթը (`queue`) և այդ հերթի նկատմամբ մրցավազքի վիճակից խուսափելն ապահովող միջոցները հայտարարել եմ գլոբալ՝ մատակարարողի (producer) և սպառողի (consumer) համար.
+
+````C++
+class Message {    // object to be communicated
+    // ...
+};
+
+queue<Message> mqueue;         // the queue of messages
+condition_variable mcond;      // the variable communicating events
+mutex mmutex;                  // for synchronizing access to mcond
+````
+
+`queue`, `condition_variable` և `mutex` տիպերը ստանդարտ գրադարանից են։
+
+Սպառողի ֆունկցիան՝ `consumer()`, կարդում և մշակում է `Message`-ները.
+
+````C++
+void consumer()
+{
+    while(true) {
+        unique_lock lck {mmutex};          // acquire mmutex
+        mcond.wait(lck,[] { return !mqueue.empty(); });   // release lck and wait;
+
+        // re-acquire lck upon wakeup
+        // don't wake up unless mqueue is non-empty
+        auto m = mqueue.front();           // get the message
+        mqueue.pop();
+        lck.unlock();                      // release lck
+        // ... process m ...
+     }
+}
+````
+
+Այստեղ ես `mqueue`-ի և `condition_variable`-ի գործողությունները հատուկ պաշտպանում եմ `mutex`-ի `unique_lock`-ով՝։ `condition_variable`-ի սպասելը բաց է թողնում իր արգումենտ փականը քանի դեռ սպասումը չի ավարտվել (քանի դեռ հերփը դատարկ չէ), ապա նորից զբաղեցնում է այն։ Պայմանի բացահայտ ստուգումը, այստեղ `!mqueue.empty()`, պաշտպանում է protects against waking up just to find that some other task has “gotten there first” so that the condition no longer holds.
+
+`scoped_lock`-ի փոխարեն `unique_lock`-ն օգտագործել եմ երկու պատճառով.
+
+* Պետք է կարողանանք փականը փոխանցել `condition_variable`-ի `wait()`-ին։ `scoped_lock`-ը չի կարող պատճենվել, իսկ `unique_lock`-ը կարող է։
+* Ուզում ենք, մինչև հաղորդագրության մշակելը, բաց թողնել պայմանական փոփոխականը պաշտպանող `mutex`-ը։ `unique_lock`-ը գործողություններ է առաջարկում սինխրոնիզացիայի ցածր մակարդակի կառավարման համար, ինչպիսիք են `lock()`-ը և `unlock()`-ը։
+
+Մյուս կողմից էլ՝ `unique_lock`-ը կարող է օգտագործել միայն մեկ `mutex`։
+
+Համապատասխան արտադրողն ունի հետևյալ տեսքը.
+
+````C++
+void producer()
+{
+     while(true) {
+          Message m;
+          // ... fill the message ...
+          scoped_lock lck {mmutex};      // պաշտպանել գործողությունը
+          mqueue.push(m);
+          mcond.notify_one();            // notify
+     }                                   // release lock (at end of scope)
+}
+````
+
+## Խնդիրների հաղորդակցությունը
